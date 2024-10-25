@@ -1,9 +1,40 @@
 import CRUD.*;
+import connection.DatabaseConnection;
+import dao.MemberDAO;
+import model.Member;
+import service.MemberService;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 
 public class Main {
     public static void main(String[] args){
+        MemberService memberService = new MemberService(new MemberDAO());
+
+        try {
+            // Create a new member (you can add this if needed)
+            Member newMember = new Member(0, "John", "Doe", LocalDate.of(1990, 1, 1), "john.doe@example.com", "123456789", "123 Elm St", 1);
+            memberService.addMember(newMember);
+
+            // Get a member by ID
+            Member member = memberService.getMemberById(1);
+            if (member != null) {
+                System.out.println("Retrieved member: " + member.getFirstName());
+            } else {
+                System.out.println("Member with ID 1 does not exist.");
+            }
+
+            // Update member
+            member.setPhoneNumber("9999999999");
+            memberService.updateMember(member);
+
+            // Delete a member
+            memberService.deleteMember(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Connection connection = DatabaseConnection.getConnection();
         if (connection != null) {
             System.out.println("Connection Successful");
